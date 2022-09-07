@@ -19,8 +19,7 @@ app.use(cors());
 // app.use(
 //   cors({
 //     origin: [
-//       'http://dyakovlevich.nomoredomains.sbs',
-//       'https://dyakovlevich.nomoredomains.sbs',
+//       'https://kinopoisk.nomoredomains.sbs',
 //       'http://localhost:3000',
 //       'localhost:3000',
 //     ],
