@@ -7,6 +7,13 @@ const NotFoundError = require('../errors/NotFoundError');
 const DuplicateError = require('../errors/DuplicateError');
 const ValidationError = require('../errors/ValidationError');
 
+const {
+  wrongIdErrorMessage,
+  wrongDataErrorMessage,
+  duplicateUserEmailErrorMessage,
+  notFoundUserErrorMessage,
+} = require('../utils/config');
+
 module.exports.createUser = (req, res, next) => {
   const {
     name, email, password,
@@ -25,10 +32,10 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ValidationError('Введены некорретные данные'));
+        return next(new ValidationError(wrongDataErrorMessage));
       }
       if (err.code === 11000) {
-        return next(new DuplicateError('Пользователь с данным e-mail уже существует'));
+        return next(new DuplicateError(duplicateUserEmailErrorMessage));
       }
       return next();
     });
@@ -66,7 +73,7 @@ module.exports.getCurrentUser = (req, res, next) => {
   User.find({ _id })
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
+        return next(new NotFoundError(notFoundUserErrorMessage));
       }
       return res.send(...user);
     })
@@ -85,19 +92,19 @@ module.exports.updateUser = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
+        return next(new NotFoundError(notFoundUserErrorMessage));
       }
       return res.send(user);
     })
     .catch((err) => {
       if (err.code === 11000) {
-        return next(new DuplicateError('Пользователь с таким e-mail уже есть'));
+        return next(new DuplicateError(duplicateUserEmailErrorMessage));
       }
       if (err.name === 'CastError') {
-        return next(new ValidationError('Передан некорректный _id пользователя'));
+        return next(new ValidationError(wrongIdErrorMessage));
       }
       if (err.name === 'ValidationError') {
-        return next(new ValidationError('Введены некорретные данные'));
+        return next(new ValidationError(wrongDataErrorMessage));
       }
       return next(err);
     });
